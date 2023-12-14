@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -43,8 +44,15 @@ class EmployeeRepositoryTest {
 
     @DisplayName("Test zapisywania pracownika")
     @Test
-    void y() {
+    void givenEmployee_whenSaved_thenReturnSavedEmployee() {
+        //given
+        //when
         Employee savedEmployee = employeeRepository.save(employee);
+
+        //then
+        assertThat(savedEmployee).isNotNull();
+        assertThat(savedEmployee.getId()).isBetween(0L, 2L);
+        assertThat(savedEmployee.getId()).isGreaterThan(0);
     }
 
     @DisplayName("Test pobierania wszystkich pracowników")
