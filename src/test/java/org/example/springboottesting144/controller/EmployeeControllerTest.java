@@ -144,7 +144,7 @@ class EmployeeControllerTest {
 
     @DisplayName("testowanie endpoint 'updateEmployee' korzysta z metody 'save' - pozytywny scenariusz")
     @Test
-    void x() throws Exception {
+    void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdatedEmployee() throws Exception {
         // given
         long id = 1L;
         Employee savedEmployee = Employee.builder().firstName("Karol").lastName("Darwin").email("karol@darwin.pl").build();
@@ -166,8 +166,38 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.lastName", is(updatedEmployee.getLastName())))
                 .andExpect(jsonPath("$.email", is(updatedEmployee.getEmail())));
     }
-    // testowanie endpoint 'updateEmployee' - negatywny scenariusz
 
-    // stworzyć endpoint 'deleteEmployee'
-    // testowanie endpoint 'deleteEmployee'
+    @DisplayName("testowanie endpoint 'updateEmployee' korzysta z metody 'save' - negatywny scenariusz")
+    @Test
+    void givenUpdatedEmployee_whenUpdateEmployee_thenReturn404() throws Exception {
+        // given
+        long id = 1L;
+        Employee updatedEmployee = Employee.builder().firstName("Adam").lastName("Luter").email("adam@darwin.pl").build();
+
+        given(employeeService.getEmployeeById(id)).willReturn(Optional.empty());
+
+        // when
+        ResultActions response = mockMvc.perform(put("/api/employees/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedEmployee)));
+
+        // then
+        response.andDo(print()).andExpect(status().isNotFound());
+    }
+
+
+    @DisplayName("testowanie endpoint 'deleteEmployee'")
+    @Test
+    void x () throws Exception {
+        // given
+        long id = 1L;
+        willDoNothing().given(employeeService).deleteEmployee(id);
+
+        // when
+        ResultActions response = mockMvc.perform(delete("/api/employees/{id}", id));
+
+        // then
+        response.andDo(print()).andExpect(status().isOk());
+    }
+
 }
